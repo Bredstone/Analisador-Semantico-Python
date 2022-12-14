@@ -1,0 +1,114 @@
+def hello_world () {
+  print "Hello World";
+}
+
+def add_sub () {
+  int x;
+  int y;
+
+  x = 5;
+  y = 3;
+
+  print x + y;
+  print x - y;
+}
+
+def mult_div_mod () {
+  int x;
+  int y;
+
+  x = 5;
+  y = 3;
+
+  print x * y;
+  print x / y;
+  print x % y;
+}
+
+def comparison () {
+  int x;
+  int y;
+
+  x = 5;
+  y = 3;
+
+  print x == y;
+  print x != y;
+  print x > y;
+  print x < y;
+  print x >= y;
+  print x <= y;
+}
+
+def if_else () {
+  int time;
+  time = 22;
+
+  if (time < 10) {
+    print "Good morning.";
+  } else {
+    if (time < 20) {
+      print "Good day.";
+    }  else {
+      print "Good evening.";
+    } endif;
+  } endif;
+}
+
+def for_loop () {
+  int x;
+
+  for (x = 0; x < 5; x = x + 1) {
+    print x;
+  }
+}
+
+def array () {
+  string cars;
+  cars = new string[5];
+
+  cars[0] = "BMW";
+  cars[1] = "Ferrari";
+  cars[2] = "Volvo";
+  cars[3] = "Lamborghini";
+  cars[4] = "Mercedes";
+
+  int x;
+  for (x = 0; x < 5; x = x + 1) {
+    print cars[i];
+  }
+}
+
+def matrix_ex () {
+  int matrix;
+  matrix = new int[2][2];
+
+  matrix[0][0] = 1;
+  matrix[0][1] = 2;
+  matrix[1][0] = 3;
+  matrix[1][1] = 4;
+  
+  int i;
+  int j;
+
+  for (i = 0; i < 2; i = i + 1) {
+    for (j = 0; j < 2; j = j + 1) {
+      print matrix[i][j];
+    }
+  }
+}
+
+def function (int parameter1, int parameter2) {
+  return parameter1 + parameter2;
+}
+
+def recursion (int k) {
+  if (k > 0) {
+    int aux;
+    aux = k - 1;
+
+    return k + recursion(aux);
+  } else {
+    return 0;
+  } endif;
+}

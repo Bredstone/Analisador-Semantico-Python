@@ -1,0 +1,22 @@
+null null
+invoke invoke
+def def
+int int
+float float
+string string
+endif endif
+break break
+print print
+read read
+return return
+if if
+else else
+for for
+new new
+string_constant (".*"|\'.*\')
+float_constant [\+-]?[0-9]+\.[0-9]+(E[\+-]?[0-9]+(\.[0-9]+)?)?
+int_constant [\+-]?[0-9]+(E[\+-]?[0-9]+)?
+ident [a-zA-Z_][a-zA-Z_0-9]*
+literals (){}[]=<>!+-*/%,;
+ignore  	
+IDENT ident

@@ -1,0 +1,52 @@
+EXPRESSION     -> NUMEXPRESSION EXPRESSION'              EXPRESSION'.node = NUMEXPRESSION.root
+                                                         EXPRESSION.root = EXPRESSION'.sin
+
+EXPRESSION'    -> RELOP NUMEXPRESSION                    EXPRESSION'.sin = exp_node(RELOP.operator, "op", EXPRESSION'.node, NUMEXPRESSION.root)
+EXPRESSION'    -> &                                      EXPRESSION'.sin = EXPRESSION'.node
+
+NUMEXPRESSION  -> TERM NUMEXPRESSION'                    NUMEXPRESSION'.node = TERM.root
+                                                         NUMEXPRESSION.root = NUMEXPRESSION'.sin
+
+NUMEXPRESSION' -> SUM TERM NUMEXPRESSION'                NUMEXPRESSION'¹.node = exp_node(SUM.operator, "op", NUMEXPRESSION'.node, TERM.root)
+                                                         NUMEXPRESSION'.sin = NUMEXPRESSION'¹.sin
+NUMEXPRESSION' -> &                                      NUMEXPRESSION'.sin = NUMEXPRESSION'.node
+
+TERM           -> UNARYEXPR TERM'                        TERM'.node = UNARYEXPR.node
+                                                         TERM.root = TERM'.sin
+
+TERM'          -> MULTI UNARYEXPR TERM'                  TERM'¹.node = exp_node(MULTI.operator, "op", TERM'.node, UNARYEXPR.node)
+                                                         TERM'.sin = TERM'¹.sin
+TERM'          -> &                                      TERM'.sin = TERM'.node
+
+RELOP          -> < OREQ                                 RELOP.operator = <.lexeme + OREQ.value 
+RELOP          -> > OREQ                                 RELOP.operator = >.lexeme + OREQ.value 
+RELOP          -> = =                                    RELOP.operator = =.lexeme + =.lexeme 
+RELOP          -> ! =                                    RELOP.operator = !.lexeme + =.lexeme
+        
+OREQ           -> =                                      OREQ.value = =.lexeme
+OREQ           -> &                                      OREQ.value = ""
+
+SUM            -> +                                      SUM.operator = +.lexeme 
+SUM            -> -                                      SUM.operator = -.lexeme
+
+MULTI          -> *                                      MULTI.operator = *.lexeme
+MULTI          -> /                                      MULTI.operator = /.lexeme
+MULTI          -> %                                      MULTI.operator = %.lexeme
+
+UNARYEXPR      -> SUM FACTOR                             set_signal(FACTOR.node, SUM.operator)
+                                                         UNARYEXPR.node = FACTOR.node
+UNARYEXPR      -> FACTOR                                 UNARYEXPR.node = FACTOR.node
+
+FACTOR         -> int_constant                           FACTOR.node = exp_node(int_constant.lexeme, "int")
+FACTOR         -> float_constant                         FACTOR.node = exp_node(float_constant.lexeme, "float")
+FACTOR         -> string_constant                        FACTOR.node = exp_node(string_constant.lexeme, "string")
+FACTOR         -> null                                   FACTOR.node = exp_node("null", "null")
+FACTOR         -> ( NUMEXPRESSION )                      FACTOR.node = NUMEXPRESSION.root
+FACTOR         -> LVALUE                                 FACTOR.node = LVALUE.node
+
+LVALUE         -> ident NUM_INDEX                        NUM_INDEX.indexes = []
+                                                         LVALUE.node = exp_node(ident.lexeme, get_ident_type(ident.lexeme), indexes=NUM_INDEX.indexes)
+
+NUM_INDEX      -> [ NUMEXPRESSION ] NUM_INDEX            append(NUM_INDEX.indexes, NUMEXPRESSION.root)
+                                                         NUM_INDEX¹.indexes = NUM_INDEX.indexes
+NUM_INDEX      -> &

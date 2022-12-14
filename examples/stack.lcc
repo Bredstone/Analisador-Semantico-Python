@@ -1,0 +1,136 @@
+def is_empty () {
+	int top;
+
+	if(top == -1) {
+		return 1;
+	} else {
+		return 0;
+	} endif;
+}
+
+def is_full () {
+	int top;
+	int capacity;
+
+	if (top == capacity - 1) {
+		return 1;
+	} else {
+		return 0;
+	} endif;
+}
+
+def append (string value) {
+	int top;
+	
+	top = top + 1;
+	elements[top] = value;
+}
+
+def pop () {
+	int top;
+
+	string aux;
+	aux = elements[top];
+
+	top = top - 1;
+	return aux;
+}
+
+def return_top () {
+	return elements[top];
+}
+
+def print_stack () {
+	int res;
+	res = invoke is_full();
+
+	if(res == 1) {
+		print "Pilha cheia!";
+	} else {
+		res = invoke is_empty();
+
+		if(res == 1){
+			print "Pilha vazia!";
+		} endif;
+	} endif;
+
+	int i;
+	for (i = capacity; i >= 0; i = i - 1){
+		print elements[i];
+	}
+}
+
+def main () {
+	int top;
+	top = -1;
+
+	int capacity;
+	capacity = 10;
+
+	string elements;
+	elements = new string[10];
+
+	string aux;
+
+	string objects[10];
+	objects = new string[10];
+	objects[0] = "apple";
+	objects[1] = "banana";
+	objects[2] = "car";
+	objects[3] = "table";
+	objects[4] = "book";
+	objects[5] = "case";
+	objects[6] = "shelf";
+	objects[7] = "blanket";
+	objects[8] = "lantern";
+	objects[9] = "pencil";
+	
+	invoke print_stack();
+	print '\n';
+
+	aux = objects[0];
+	invoke append(aux);
+	aux = objects[1];
+	invoke append(aux);
+	aux = objects[2];
+	invoke append(aux);
+	aux = objects[3];
+	invoke append(aux);
+	aux = objects[4];
+	invoke append(aux);
+
+	invoke print_stack();
+	print '\n';
+
+	aux = objects[5];
+	invoke append(aux);
+	aux = objects[6];
+	invoke append(aux);
+	aux = objects[7];
+	invoke append(aux);
+	aux = objects[8];
+	invoke append(aux);
+	aux = objects[9];
+	invoke append(aux);
+
+	invoke print_stack();
+	print '\n';
+
+	invoke pop();
+	invoke pop();
+	invoke pop();
+	invoke pop();
+	invoke pop();
+
+	invoke print_stack();
+	print '\n';
+
+	invoke pop();
+	invoke pop();
+	invoke pop();
+	invoke pop();
+	invoke pop();
+
+	invoke print_stack();
+	print '\n';
+}

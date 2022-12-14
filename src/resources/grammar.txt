@@ -1,0 +1,110 @@
+PROGRAM -> § scope() § STATEMENT
+PROGRAM -> § scope() § FUNCLIST
+PROGRAM -> &
+
+FUNCLIST -> FUNCDEF FUNCLIST'
+FUNCLIST' -> FUNCLIST
+FUNCLIST' -> &
+
+FUNCDEF -> def ident § scope( #ident_0# ) § ( § #PARAMLIST_0.count# = 0 § PARAMLIST ) § add_func( #ident_0# , #PARAMLIST_0.count# ) § { STATELIST } § unscope() §
+
+PARAMLIST -> &
+PARAMLIST -> TYPE ident § add_var( #TYPE_0.type# , #ident_0# ) ; #PARAMLIST'_0.count# = #PARAMLIST_0.count# + 1 § PARAMLIST' § #PARAMLIST_0.count# = #PARAMLIST'_0.count# §
+PARAMLIST' -> &
+PARAMLIST' -> , § #PARAMLIST_0.count# = #PARAMLIST'_0.count# § PARAMLIST § #PARAMLIST'_0.count# = #PARAMLIST_0.count# §
+
+TYPE -> int § #TYPE_0.type# = "int" §
+TYPE -> float § #TYPE_0.type# = "float" §
+TYPE -> string § #TYPE_0.type# = "string" §
+
+STATEMENT -> VARDECL ; 
+STATEMENT -> FUNCCALL ;
+STATEMENT -> ATRIBSTAT ;
+STATEMENT -> PRINTSTAT ;
+STATEMENT -> READSTAT ;
+STATEMENT -> RETURNSTAT ;
+STATEMENT -> IFSTAT
+STATEMENT -> FORSTAT
+STATEMENT -> § scope( #{_0# , #STATEMENT_0.is_loop# ) § { STATELIST } § unscope() §
+STATEMENT -> § assertLoop( #break_0# ) § break ;  
+STATEMENT -> ; 
+
+VARDECL -> int ident § add_var("int" , #ident_0# ) § INT_INDEX
+VARDECL -> float ident § add_var("float" , #ident_0# ) § INT_INDEX
+VARDECL -> string ident § add_var("string" , #ident_0# ) § INT_INDEX
+
+INT_INDEX -> [ int_constant ] INT_INDEX
+INT_INDEX -> &
+
+ATRIBSTAT -> LVALUE = § #ATRIBSTAT'_0.terminal_assoc# = #=_0# § ATRIBSTAT'
+ATRIBSTAT' -> EXPRESSION § assert_expression( #EXPRESSION_0.root# , #ATRIBSTAT'_0.terminal_assoc# ) §
+ATRIBSTAT' -> ALLOCEXPRESSION
+ATRIBSTAT' -> FUNCCALL
+
+FUNCCALL -> invoke ident ( PARAMLISTCALL )
+
+PARAMLISTCALL -> ident PARAMLISTCALL'
+PARAMLISTCALL -> FACTOR PARAMLISTCALL'
+PARAMLISTCALL -> &
+PARAMLISTCALL' -> &
+PARAMLISTCALL' -> , PARAMLISTCALL
+
+PRINTSTAT -> print EXPRESSION § assert_expression( #EXPRESSION_0.root# , #print_0# ) §
+READSTAT -> read LVALUE
+RETURNSTAT -> return
+
+IFSTAT -> if ( EXPRESSION § assert_expression( #EXPRESSION_0.root# , #if_0# ) § ) STATEMENT IFSTAT'
+IFSTAT' -> else STATEMENT endif
+IFSTAT' -> endif
+
+FORSTAT -> for ( ATRIBSTAT ; EXPRESSION § assert_expression( #EXPRESSION_0.root# , #for_0# ) § ; ATRIBSTAT ) § #STATEMENT_0.is_loop# = True § STATEMENT
+
+STATELIST -> STATEMENT STATELIST'
+STATELIST' -> &
+STATELIST' -> STATELIST
+
+ALLOCEXPRESSION -> new TYPE § #ALLOC_SIZE_0.terminal_assoc# = #new_0# § ALLOC_SIZE 
+ALLOC_SIZE -> [ NUMEXPRESSION § assert_expression( #NUMEXPRESSION_0.root# , #ALLOC_SIZE_0.terminal_assoc# ) § ] § #ALLOC_SIZE'_0.terminal_assoc# = #ALLOC_SIZE_0.terminal_assoc# § ALLOC_SIZE'
+ALLOC_SIZE' -> § #ALLOC_SIZE_0.terminal_assoc# = #ALLOC_SIZE'_0.terminal_assoc# § ALLOC_SIZE
+ALLOC_SIZE' -> &
+
+EXPRESSION -> NUMEXPRESSION § #EXPRESSION'_0.node# = #NUMEXPRESSION_0.root# § EXPRESSION' § #EXPRESSION_0.root# = #EXPRESSION'_0.sin# §
+EXPRESSION' -> RELOP NUMEXPRESSION § #EXPRESSION'_0.sin# = exp_node( #RELOP_0.operator# , "op", #EXPRESSION'_0.node# , #NUMEXPRESSION_0.root# ) §
+EXPRESSION' -> & § #EXPRESSION'_0.sin# = #EXPRESSION'_0.node# §
+
+NUMEXPRESSION -> TERM § #NUMEXPRESSION'_0.node# = #TERM_0.root# § NUMEXPRESSION' § #NUMEXPRESSION_0.root# = #NUMEXPRESSION'_0.sin# §
+NUMEXPRESSION' -> SUM TERM § #NUMEXPRESSION'_1.node# = exp_node( #SUM_0.operator# , "op", #NUMEXPRESSION'_0.node# , #TERM_0.root# ) § NUMEXPRESSION' § #NUMEXPRESSION'_0.sin# = #NUMEXPRESSION'_1.sin# §
+NUMEXPRESSION' -> & § #NUMEXPRESSION'_0.sin# = #NUMEXPRESSION'_0.node# §
+
+TERM -> UNARYEXPR § #TERM'_0.node# = #UNARYEXPR_0.node# § TERM' § #TERM_0.root# = #TERM'_0.sin# §
+TERM' -> MULTI UNARYEXPR § #TERM'_1.node# = exp_node( #MULTI_0.operator# , "op", #TERM'_0.node# , #UNARYEXPR_0.node# ) § TERM' § #TERM'_0.sin# = #TERM'_1.sin# §
+TERM' -> & § #TERM'_0.sin# = #TERM'_0.node# §
+
+RELOP -> < OREQ § #RELOP_0.operator# = #<_0.lexeme# + #OREQ_0.value# § 
+RELOP -> > OREQ § #RELOP_0.operator# = #>_0.lexeme# + #OREQ_0.value# § 
+RELOP -> = = § #RELOP_0.operator# = #=_0.lexeme# + #=_1.lexeme# § 
+RELOP -> ! = § #RELOP_0.operator# = #!_0.lexeme# + #=_0.lexeme# §
+
+OREQ -> = § #OREQ_0.value# = #=_0.lexeme# §
+OREQ -> & § #OREQ_0.value# = "" §
+
+SUM -> + § #SUM_0.operator# = #+_0.lexeme# § 
+SUM -> - § #SUM_0.operator# = #-_0.lexeme# §
+
+MULTI -> * § #MULTI_0.operator# = #*_0.lexeme# §
+MULTI -> / § #MULTI_0.operator# = #/_0.lexeme# §
+MULTI -> % § #MULTI_0.operator# = #%_0.lexeme# §
+
+UNARYEXPR -> SUM FACTOR § set_signal( #FACTOR_0.node# , #SUM.operator# ) ; #UNARYEXPR_0.node# = #FACTOR_0.node# §
+UNARYEXPR -> FACTOR § #UNARYEXPR_0.node# = #FACTOR_0.node# §
+
+FACTOR -> int_constant § #FACTOR_0.node# = exp_node( #int_constant_0.lexeme# , "int" ) §
+FACTOR -> float_constant § #FACTOR_0.node# = exp_node( #float_constant_0.lexeme# , "float") §
+FACTOR -> string_constant § #FACTOR_0.node# = exp_node( #string_constant_0.lexeme# , "string" ) §
+FACTOR -> null § #FACTOR_0.node# = exp_node( "null" , "null" ) §
+FACTOR -> ( NUMEXPRESSION ) § #FACTOR_0.node# = #NUMEXPRESSION_0.root# §
+FACTOR -> LVALUE § #FACTOR_0.node# = #LVALUE_0.node# §
+
+LVALUE -> ident § #NUM_INDEX_0.indexes# = [] § NUM_INDEX § #LVALUE_0.node# =  exp_node( #ident_0.lexeme# , get_ident_type( #ident_0.lexeme# ), indexes = #NUM_INDEX_0.indexes# ) §
+NUM_INDEX -> [ NUMEXPRESSION § assert_expression( #NUMEXPRESSION_0.root# , #[_0# ) § ] § append( #NUM_INDEX_0.indexes# , #NUMEXPRESSION_0.root# ) ; #NUM_INDEX_1.indexes# = #NUM_INDEX_0.indexes# § NUM_INDEX
+NUM_INDEX -> &

@@ -1,0 +1,104 @@
+def insertionSort (int vetor, int size) {
+
+  int j;
+  int key;
+  int i;
+
+  for (j = 1; j < size; j = j + 1) {
+    key = vetor[j];
+
+    for (i = j - 1; i >= 0; i = i - 1) {
+      if (vetor[i] > key) {
+        vetor[i + 1] = vetor[i];
+      } endif;
+    }
+    
+    vetor[i + 1] = key;
+  }
+}
+
+def heapify (int vetor, int size, int i) {
+
+  int largest;
+  largest = i;
+  
+  int l;
+  l = 2 * i + 1;
+  
+  int r;
+  r = 2 * i + 2;
+
+  if (l < size) {
+    if (vetor[l] > vetor[largest]) {
+      largest = l;
+    } endif;
+  } endif;
+
+  if (r < size) {
+    if (vetor[r] > vetor[largest]) {
+      largest = r;
+    } endif;
+  } endif;
+
+  if (largest != i) {
+    int swap;
+    swap = vetor[i];
+    
+    vetor[i] = vetor[largest];
+    vetor[largest] = swap;
+    
+    invoke heapify (vetor, size, largest);
+  } endif;
+}
+
+def heapSort (int vetor, int size) {
+
+  int i;
+
+  for (i = size / 2 - 1; i >= 0; i = i - 1) {
+    invoke heapify(vetor, size, i);
+  }
+
+  for (i = size - 1; i > 0; i = i - 1) {
+    int temp;
+    temp = vetor[0];
+
+    vetor[0] = vetor[i];
+    vetor[i] = temp;
+
+    invoke heapify(vetor, i, 0);
+  }
+}
+
+def main () {
+  int vetor_teste;
+  vetor_teste = new int[10];
+  vetor_teste[0] = 10;
+  vetor_teste[1] = 9;
+  vetor_teste[2] = 8;
+  vetor_teste[3] = 7;
+  vetor_teste[4] = 6;
+  vetor_teste[5] = 5;
+  vetor_teste[6] = 4;
+  vetor_teste[7] = 3;
+  vetor_teste[8] = 2;
+  vetor_teste[9] = 1;
+
+  invoke insertionSort(vetor_teste, 10);
+  print vetor_teste;
+
+  vetor_teste = new int[10];
+  vetor_teste[0] = 10;
+  vetor_teste[1] = 9;
+  vetor_teste[2] = 8;
+  vetor_teste[3] = 7;
+  vetor_teste[4] = 6;
+  vetor_teste[5] = 5;
+  vetor_teste[6] = 4;
+  vetor_teste[7] = 3;
+  vetor_teste[8] = 2;
+  vetor_teste[9] = 1;
+
+  invoke heapSort (vetor_teste, 10);
+  print vetor_teste;
+}

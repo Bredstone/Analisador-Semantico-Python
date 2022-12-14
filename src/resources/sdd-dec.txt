@@ -1,0 +1,19 @@
+FUNCDEF    -> def ident ( PARAMLIST ) { STATELIST }          PARAMLIST.count = 0
+                                                             add_func(ident, PARAMLIST.count)
+
+PARAMLIST  -> TYPE ident PARAMLIST'                          add_var(TYPE.type, ident)
+                                                             PARAMLIST'.count = PARAMLIST.count + 1
+                                                             PARAMLIST.count = PARAMLIST'.count
+PARAMLIST  -> &
+
+PARAMLIST' -> , PARAMLIST                                    PARAMLIST.count = PARAMLIST'.count
+                                                             PARAMLIST'.count = PARAMLIST.count
+PARAMLIST' -> &
+
+TYPE       -> int                                            TYPE.type = "int"
+TYPE       -> float                                          TYPE.type = "float"
+TYPE       -> string                                         TYPE.type = "string"
+
+VARDECL    -> int ident INT_INDEX                            add_var("int", ident)
+VARDECL    -> float ident INT_INDEX                          add_var("float", ident)
+VARDECL    -> string ident INT_INDEX                         add_var("string", ident)
